@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: c-fpm
+  labels:
+    name: c-fpm
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: c-fpm
+  template:
+    metadata:
+      labels:
+        app: c-fpm
+    spec:
+      containers:
+      - name: c-fpm
+        image: 192.168.212.12/qoo13149/php-fpm:v7.3
+        volumeMounts:
+        - mountPath: /usr/share/nginx/html/
+          name: nginx-data
+        ports:
+        - containerPort: 9000
+      volumes:
+      - name: nginx-data
+        hostPath:
+         path: /kubernetes-lemp/k8s/nginx/html/

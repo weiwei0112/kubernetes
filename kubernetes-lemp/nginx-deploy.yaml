@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: c-nginx
+spec:
+  selector:
+    matchLabels:
+      app: c-nginx
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: c-nginx
+    spec:
+      containers:
+      - name: c-nginx
+        image: 192.168.212.12/qoo13149/nginx:v1.14.0-5
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: nginx-data
+          mountPath: /usr/share/nginx/html
+        - name: nginx-conf
+          mountPath: /etc/nginx/conf.d/
+      volumes:
+      - name: nginx-data
+        hostPath:
+         path: /kubernetes-lemp/k8s/nginx/html/
+      - name: nginx-conf
+        hostPath:
+         path: /kubernetes-lemp/k8s/nginx/conf/
