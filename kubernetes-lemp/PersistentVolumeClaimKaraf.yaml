@@ -1,3 +1,4 @@
+kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: mysql-claim
@@ -6,5 +7,4 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 20Gi
-  storageClassName: standard
+      storage: 10Mi

@@ -2,11 +2,21 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: c-nginx
+  namespace: default
+  labels:
+    name: c-nginx
 spec:
   selector:
     matchLabels:
       app: c-nginx
-  replicas: 2
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 5
+  revisionHistoryLimit: 10
   template:
     metadata:
       labels:
@@ -14,7 +24,16 @@ spec:
     spec:
       containers:
       - name: c-nginx
+        # Updata nginx image version => nginx:v1.14.0-5 => nginx:v1.14.0-6
         image: 192.168.212.12/qoo13149/nginx:v1.14.0-5
+        #image: 192.168.212.12/qoo13149/nginx:v1.14.0-6
+        resources:
+          requests:
+            cpu: "50m"
+            memory: "20Mi"
+          limits:
+            cpu: "100m"
+            memory: "50Mi"
         ports:
         - containerPort: 80
         volumeMounts:
@@ -25,7 +44,7 @@ spec:
       volumes:
       - name: nginx-data
         hostPath:
-         path: /kubernetes-lemp/k8s/nginx/html/
+         path: /usr/share/kubernetes-lemp/k8s/nginx/html/
       - name: nginx-conf
         hostPath:
-         path: /kubernetes-lemp/k8s/nginx/conf/
+         path: /usr/share/kubernetes-lemp/k8s/nginx/conf/

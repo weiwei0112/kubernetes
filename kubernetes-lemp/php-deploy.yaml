@@ -2,10 +2,18 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: c-fpm
+  namespace: default
   labels:
     name: c-fpm
 spec:
-  replicas: 2
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 5
+  revisionHistoryLimit: 10
   selector:
     matchLabels:
       app: c-fpm
@@ -17,6 +25,13 @@ spec:
       containers:
       - name: c-fpm
         image: 192.168.212.12/qoo13149/php-fpm:v7.3
+        resources:
+          requests:
+            cpu: "50m"
+            memory: "20Mi"
+          limits:
+            cpu: "100m"
+            memory: "50Mi"
         volumeMounts:
         - mountPath: /usr/share/nginx/html/
           name: nginx-data
@@ -25,4 +40,4 @@ spec:
       volumes:
       - name: nginx-data
         hostPath:
-         path: /kubernetes-lemp/k8s/nginx/html/
+         path: /usr/share/kubernetes-lemp/k8s/nginx/html/

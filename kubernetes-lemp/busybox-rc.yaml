@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: nfs-demo
+    role: busybox
+  name: nfs-busybox
+spec:
+  replicas: 50
+  selector:
+    matchLabels:
+      app: nfs-demo
+      role: busybox
+  template:
+    metadata:
+      labels:
+        app: nfs-demo
+        role: busybox
+    spec:
+      containers:
+      - image: busybox
+        command:
+          - sh
+          - -c
+          - 'while true; do wget -q -O- http://c-nginx > dev/null; done'
+        imagePullPolicy: IfNotPresent
+        name: busybox
